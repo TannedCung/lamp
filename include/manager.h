@@ -8,7 +8,7 @@ using json = nlohmann::json;
 
 #define DEFAULT_SSID "Twenty  Two"
 #define DEFAULT_PASSWORD "1qwertyuiop0"
-#define DEFAULT_MQTT_SERVER "192.168.1.4"
+#define DEFAULT_MQTT_SERVER "192.168.1.98"
 #define DEFAULT_MQTT_PORT 1883
 #define DEFAULT_MQTT_TOPIC "/light/command"
 #define DEFAULT_LOG_TOPIC "/light/logs"
