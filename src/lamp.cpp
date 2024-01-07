@@ -57,9 +57,8 @@ bool TheLamp::daily_change_mode(int mode_index){
     return true; // auto keep auto, manual keep manual
   } else {
     auto _now = now();
-    _now = _now % DAILY_SECONDS;
     if (_now > manual_disable_at){
-      manual_disable_at = -1; // in the next day, auto by default
+      // manual_disable_at = -1; // in the next day, auto by default
       change_mode(mode_index, true); // any mode to auto
     }
     return true;
@@ -72,16 +71,15 @@ bool TheLamp::change_mode(std::string mode, bool isAuto){
   }
   if (!isAuto){
     auto _now = now();
-    _now = _now % DAILY_SECONDS;
     Serial.print("[DEBUG] _now: ");
     Serial.println(_now);
     for (auto m: milestones){
       Serial.print("[DEBUG] milestones ->: ");
       Serial.println(m);
-      if (_now < m){
+      if ((_now % DAILY_SECONDS) < m){
         Serial.print("[DEBUG] manual_disable_at ->: ");
         Serial.println(m);
-        manual_disable_at = m;
+        manual_disable_at = _now + (m - (_now % DAILY_SECONDS));
         break;
       }
     }
@@ -118,16 +116,15 @@ bool TheLamp::change_mode(std::string mode, bool isAuto){
 bool TheLamp::change_mode(int mode_index, bool isAuto){
 if (!isAuto){
     auto _now = now();
-    _now = _now % DAILY_SECONDS;
     Serial.print("[DEBUG] _now: ");
     Serial.println(_now);
     for (auto m: milestones){
       Serial.print("[DEBUG] milestones ->: ");
       Serial.println(m);
-      if (_now < m){
+      if ((_now % DAILY_SECONDS) < m){
         Serial.print("[DEBUG] manual_disable_at ->: ");
         Serial.println(m);
-        manual_disable_at = m;
+        manual_disable_at = _now + (m - (_now % DAILY_SECONDS));
         break;
       }
     }
@@ -167,10 +164,9 @@ bool TheLamp::light_down(){
 
 bool TheLamp::behave(){
   auto _now = now();
-  _now = _now % DAILY_SECONDS;
   int _mode = -1;
   for (auto m: milestones){
-    if (_now > m){
+    if ((_now % DAILY_SECONDS) > m){
       _mode ++; // -1 for idle, 0 for Cold, 1 for Warm, 2 for Full Bright
     }
   }
