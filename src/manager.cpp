@@ -44,7 +44,9 @@ void Manager::loop(){
   if (!client.connected()) {
       reconnect();
   }
-  client.loop();
+  if (client.connected()){
+    client.loop();
+  }
   for (int i=0; i < device_list.size(); i++){
     device_list[i]->behave();    
   }
@@ -52,7 +54,12 @@ void Manager::loop(){
 }
 
 void Manager::reconnect(){
+  int max_attemp = 5;
+  int count = 0;
   while (!client.connected()) {
+    if (count == max_attemp){
+      break;
+    }
     Serial.println("Attempting MQTT connection...");
     if (client.connect(device_id, mqttUser, mqttPassword)) {
       Serial.println("Connected to MQTT Broker");
@@ -63,6 +70,7 @@ void Manager::reconnect(){
       Serial.println(" Retrying MQTT connection...");
       delay(5000);
     }
+    count ++;
   }
 }
 
@@ -85,7 +93,9 @@ void Manager::sendMQTTMessage(const char* message) {
   if (!client.connected()) {
     reconnect();
   }
-  client.publish(log_topic, message);
+  if (client.connected()){
+    client.publish(log_topic, message);
+  }
 }
 
 void Manager::add_device(int pin) {
